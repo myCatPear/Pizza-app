@@ -1,30 +1,54 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 interface IPizzaBlock {
   title:string,
-  price:number
+  price:number,
+  imageUrl:string,
+  sizes:number[],
+  types:number[]
 }
 
 export const PizzaBlock:FC<IPizzaBlock> = (props) => {
-  const {title,price} = props
+  const {title,price, imageUrl, sizes, types} = props
+  const typesOFPizzaSize = ['тонкое', 'традиционное']
+  const DEFAULT_ACTIVE_INDEX_OF_PIZZA_SIZE = 0
+  const DEFAULT_ACTIVE_INDEX_OF_PIZZA_TYPE = 0
+  const [activeIndexOfPizzaSize, setActiveIndexOfPizzaSize] = useState(DEFAULT_ACTIVE_INDEX_OF_PIZZA_SIZE)
+  const [activeIndexOfPizzaType, setActiveIndexOfPizzaType] = useState(DEFAULT_ACTIVE_INDEX_OF_PIZZA_TYPE)
+  const onSetActiveSizeClick = (index:number) => setActiveIndexOfPizzaSize(index)
+  const onSetActiveTypeClick = (index:number) => setActiveIndexOfPizzaType(index)
   return (
     <div className='pizza-block'>
       <img
         className='pizza-block__image'
-        src='https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg'
+        src={imageUrl}
         alt='Pizza'
       />
       <h4 className='pizza-block__title'>{title}</h4>
       <div className='pizza-block__selector'>
         <ul>
-          <li className='active'>тонкое</li>
-          <li>традиционное</li>
+          {
+            types.map((typeID,index)=> {
+              return <li
+                className={activeIndexOfPizzaType === index ? "active" : ""}
+                onClick={() => onSetActiveTypeClick(index)}
+              >
+                {typesOFPizzaSize[typeID]}
+              </li>
+            })
+          }
         </ul>
         <ul>
-          <li className='active'>26 см.
-          </li>
-          <li>30 см.</li>
-          <li>40 см.</li>
+          {
+            sizes.map((size,index) => {
+              return <li
+                className={activeIndexOfPizzaSize === index ? "active" : ""}
+                onClick={()=>onSetActiveSizeClick(index)}
+              >
+                {`${size} см.`}
+              </li>
+            })
+          }
         </ul>
       </div>
       <div className='pizza-block__bottom'>
