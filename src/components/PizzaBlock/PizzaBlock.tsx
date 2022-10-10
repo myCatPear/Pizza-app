@@ -30,6 +30,7 @@ export const PizzaBlock:FC<IPizzaBlock> = (props) => {
           {
             types.map((typeID,index)=> {
               return <li
+                key={typeID}
                 className={activeIndexOfPizzaType === index ? "active" : ""}
                 onClick={() => onSetActiveTypeClick(index)}
               >
@@ -42,6 +43,7 @@ export const PizzaBlock:FC<IPizzaBlock> = (props) => {
           {
             sizes.map((size,index) => {
               return <li
+                key={index}
                 className={activeIndexOfPizzaSize === index ? "active" : ""}
                 onClick={()=>onSetActiveSizeClick(index)}
               >

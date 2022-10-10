@@ -1,0 +1,24 @@
+.root {
+  padding: 100px;
+  max-width: 750px;
+  margin: 0 auto;
+  text-align: center;
+
+  span {
+    font-size: 64px;
+  }
+}
+
+.description {
+  font-size: 22px;
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: #f5dddd;
+  border: none;
+  border-radius: 10px;
+  color: #0c3950;
+  margin-top: 10px;
+  cursor: pointer;
+}

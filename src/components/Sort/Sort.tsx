@@ -1,6 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { EMPTY_STRING, FIRST_ELEMENT_IN_ARRAY } from 'common/constants';
 
 export const Sort = () => {
+  const sortValues = ['популярности', 'цене', 'алфавиту'];
+  const [isVisiblePopup, setIsVisiblePopup] = useState(false);
+  const [currenIndexSortValue, setCurrenIndexSortValue] = useState(FIRST_ELEMENT_IN_ARRAY);
+
+  const onSetIsVisiblePopupSpanClick = () => setIsVisiblePopup(!isVisiblePopup);
+  const onSetCurrentSortValueClick = (value:number) => {
+    setCurrenIndexSortValue(value)
+    setIsVisiblePopup(false)
+  }
+
   return (
     <div className='sort'>
       <div className='sort__label'>
@@ -17,15 +28,26 @@ export const Sort = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span>популярности</span>
+        <span onClick={onSetIsVisiblePopupSpanClick}>{sortValues[currenIndexSortValue]}</span>
       </div>
-      <div className='sort__popup'>
-        <ul>
-          <li className='active'>популярности</li>
-          <li>цене</li>
-          <li>алфавиту</li>
-        </ul>
-      </div>
+      {
+        isVisiblePopup && <div className='sort__popup'>
+          <ul>
+            {
+              sortValues.map((value,index) => {
+                return <li
+                  key={index}
+                  className={index === currenIndexSortValue ? "active" : EMPTY_STRING}
+                  onClick={() => onSetCurrentSortValueClick(index)}
+                >
+                  {value}
+                </li>
+              })
+            }
+          </ul>
+        </div>
+      }
+
     </div>
   );
 };

@@ -1,8 +1,10 @@
 import React from 'react';
 import './scss/app.scss';
-import { Categories, Header, PizzaBlock, Sort } from './components';
-import pizzasList from './assets/pizzaz.json';
-import { PizzaType } from './common/types';
+import { Header, NotFoundBlock } from './components';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { publicRoutes } from './routes';
+import { ROUTE_TO_HOME, ROUTE_TO_PAGE_NOT_FOUND } from './common/constants';
+
 
 export const App = () => {
   return (
@@ -10,26 +12,13 @@ export const App = () => {
       <Header />
       <div className='content'>
         <div className='container'>
-          <div className='content__top'>
-            <Categories />
-            <Sort />
-          </div>
-          <h2 className='content__title'>Все пиццы</h2>
-          <div className='content__items'>
+          <Routes>
             {
-              pizzasList.map((pizza) => {
-                return <PizzaBlock
-                  //title,price,sizes,id,imageUrl,category, rating,types
-                  // title={title}
-                  // price={price}
-                  // imageUrl={imageUrl}
-                  // sizes={sizes}
-                  // typesPizza={types}
-                  {...pizza}
-                />;
-              })
+              publicRoutes.map((rout,index) => <Route key={index} path={rout.path} element={<rout.Component/>}/>)
             }
-          </div>
+            <Route path={"/"} element={<Navigate to={ROUTE_TO_HOME}/>}/>
+            <Route path={"*"} element={<Navigate to={ROUTE_TO_PAGE_NOT_FOUND}/>}/>
+          </Routes>
         </div>
       </div>
     </div>
