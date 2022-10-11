@@ -11,16 +11,17 @@ export const App = () => {
     <div className='wrapper'>
       <Header />
       <div className='content'>
-        <div className='container'>
-          <Routes>
-            {
-              publicRoutes.map((rout,index) => <Route key={index} path={rout.path} element={<rout.Component/>}/>)
-            }
-            <Route path={"/"} element={<Navigate to={ROUTE_TO_HOME}/>}/>
-            <Route path={"*"} element={<Navigate to={ROUTE_TO_PAGE_NOT_FOUND}/>}/>
-          </Routes>
-        </div>
+
+        <Routes>
+          {
+            publicRoutes.map((rout, index) => <Route key={index} path={rout.path}
+                                                     element={<rout.Component />} />)
+          }
+          <Route path={'/'} element={<Navigate to={ROUTE_TO_HOME} />} />
+          <Route path={'*'} element={<Navigate to={ROUTE_TO_PAGE_NOT_FOUND} />} />
+        </Routes>
       </div>
+
     </div>
   );
 };
