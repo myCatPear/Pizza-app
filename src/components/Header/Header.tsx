@@ -1,11 +1,18 @@
-import React from 'react';
-import logoSVG from 'assets/img/pizza-logo.svg'
+import React, { FC } from 'react';
+import logoSVG from 'assets/img/pizza-logo.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTE_TO_CART, ROUTE_TO_HOME } from 'common/constants';
+import { Search } from 'components/Search';
 
-export const Header = () => {
-  const navigate = useNavigate()
-  const onLogoClick = () => navigate(ROUTE_TO_HOME)
+interface IHeader  {
+  searchValue:string,
+  setSearchValue: (value:string) => void
+}
+
+export const Header:FC<IHeader> = (props) => {
+  const {setSearchValue,searchValue} = props
+  const navigate = useNavigate();
+  const onLogoClick = () => navigate(ROUTE_TO_HOME);
   return (
     <div className='header'>
       <div className='container'>
@@ -16,6 +23,7 @@ export const Header = () => {
             <p>самая вкусная пицца во вселенной</p>
           </div>
         </div>
+        <Search searchValue={searchValue} setSearchValue={setSearchValue}/>
         <div className='header__cart'>
           <Link to={ROUTE_TO_CART} className='button button--cart'>
             <span>520 ₽</span>

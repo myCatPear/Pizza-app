@@ -1,16 +1,30 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { EMPTY_STRING, FIRST_ELEMENT_IN_ARRAY } from 'common/constants';
 
-export const Sort = () => {
-  const sortValues = ['популярности', 'цене', 'алфавиту'];
+interface ISort {
+  sortType: {sortProperty:string, name:string, order:string},
+  onSetSortTypeClick: (obj:{sortProperty:string, name:string, order:string}) => void
+}
+
+export const Sort:FC<ISort> = (props) => {
+  const {onSetSortTypeClick,sortType} = props
+
+  const sortValues = [
+    {sortProperty:'rating', name:'популярности(DESC)', order:'desc'},
+    {sortProperty:'rating', name:'популярности(ASC)', order:'asc'},
+    {sortProperty:'price', name:'цене(DESC)', order:'desc'},
+    {sortProperty:'price', name:'цене(ASC)', order:'asc'},
+    {sortProperty:'title', name:'алфавиту(DESC)', order:'desc'},
+    {sortProperty:'title', name:'алфавиту(ASC)', order:'asc'},
+  ];
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
-  const [currenIndexSortValue, setCurrenIndexSortValue] = useState(FIRST_ELEMENT_IN_ARRAY);
 
   const onSetIsVisiblePopupSpanClick = () => setIsVisiblePopup(!isVisiblePopup);
-  const onSetCurrentSortValueClick = (value:number) => {
-    setCurrenIndexSortValue(value)
-    setIsVisiblePopup(false)
-  }
+
+  const onSetCurrentSortValueClick = (value: {sortProperty:string, name:string, order:string}) => {
+    onSetSortTypeClick(value);
+    setIsVisiblePopup(false);
+  };
 
   return (
     <div className='sort'>
@@ -28,20 +42,22 @@ export const Sort = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={onSetIsVisiblePopupSpanClick}>{sortValues[currenIndexSortValue]}</span>
+        <span
+          onClick={onSetIsVisiblePopupSpanClick}>{sortType.name}</span>
       </div>
       {
         isVisiblePopup && <div className='sort__popup'>
           <ul>
             {
-              sortValues.map((value,index) => {
+              sortValues.map((value, index) => {
+
                 return <li
                   key={index}
-                  className={index === currenIndexSortValue ? "active" : EMPTY_STRING}
-                  onClick={() => onSetCurrentSortValueClick(index)}
+                  className={value.name === sortType.name ? 'active' : EMPTY_STRING}
+                  onClick={() => onSetCurrentSortValueClick(value)}
                 >
-                  {value}
-                </li>
+                  {value.name}
+                </li>;
               })
             }
           </ul>
