@@ -1,28 +1,30 @@
 import React, { FC, useState } from 'react';
-import { EMPTY_STRING, FIRST_ELEMENT_IN_ARRAY } from 'common/constants';
+import { EMPTY_STRING } from 'common/constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootStateType } from 'store';
+import { SortType } from 'common/types/sortType';
+import { setSort } from 'store/slices/filterSlice';
 
-interface ISort {
-  sortType: {sortProperty:string, name:string, order:string},
-  onSetSortTypeClick: (obj:{sortProperty:string, name:string, order:string}) => void
-}
+const sortValues: SortType[] = [
+  { sortProperty: 'rating', name: 'популярности(DESC)', order: 'desc' },
+  { sortProperty: 'rating', name: 'популярности(ASC)', order: 'asc' },
+  { sortProperty: 'price', name: 'цене(DESC)', order: 'desc' },
+  { sortProperty: 'price', name: 'цене(ASC)', order: 'asc' },
+  { sortProperty: 'title', name: 'алфавиту(DESC)', order: 'desc' },
+  { sortProperty: 'title', name: 'алфавиту(ASC)', order: 'asc' }
+];
 
-export const Sort:FC<ISort> = (props) => {
-  const {onSetSortTypeClick,sortType} = props
 
-  const sortValues = [
-    {sortProperty:'rating', name:'популярности(DESC)', order:'desc'},
-    {sortProperty:'rating', name:'популярности(ASC)', order:'asc'},
-    {sortProperty:'price', name:'цене(DESC)', order:'desc'},
-    {sortProperty:'price', name:'цене(ASC)', order:'asc'},
-    {sortProperty:'title', name:'алфавиту(DESC)', order:'desc'},
-    {sortProperty:'title', name:'алфавиту(ASC)', order:'asc'},
-  ];
+export const Sort: FC = () => {
+  const sortType = useSelector<RootStateType, SortType>(state => state.filter.sort);
+  const dispatch = useDispatch();
+
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
 
   const onSetIsVisiblePopupSpanClick = () => setIsVisiblePopup(!isVisiblePopup);
 
-  const onSetCurrentSortValueClick = (value: {sortProperty:string, name:string, order:string}) => {
-    onSetSortTypeClick(value);
+  const onSetCurrentSortValueClick = (value: SortType) => {
+    dispatch(setSort({ value }));
     setIsVisiblePopup(false);
   };
 

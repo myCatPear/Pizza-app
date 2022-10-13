@@ -1,14 +1,11 @@
-import React, { ChangeEvent, FC } from 'react';
+import React, { ChangeEvent, FC, useContext } from 'react';
 import style from './Search.module.scss'
 import { EMPTY_STRING } from 'common/constants';
+import { SearchContext } from 'App';
 
-interface ISearch {
-  searchValue:string,
-  setSearchValue: (value:string) => void
-}
 
-export const Search:FC<ISearch> = (props) => {
-  const {setSearchValue,searchValue} = props
+export const Search:FC = () => {
+  const {searchValue, setSearchValue} = useContext(SearchContext)
   const onSetSearchValueChange = (event:ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
     setSearchValue(value)

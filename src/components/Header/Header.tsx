@@ -4,13 +4,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ROUTE_TO_CART, ROUTE_TO_HOME } from 'common/constants';
 import { Search } from 'components/Search';
 
-interface IHeader  {
-  searchValue:string,
-  setSearchValue: (value:string) => void
-}
 
-export const Header:FC<IHeader> = (props) => {
-  const {setSearchValue,searchValue} = props
+export const Header:FC = () => {
+
   const navigate = useNavigate();
   const onLogoClick = () => navigate(ROUTE_TO_HOME);
   return (
@@ -23,7 +19,7 @@ export const Header:FC<IHeader> = (props) => {
             <p>самая вкусная пицца во вселенной</p>
           </div>
         </div>
-        <Search searchValue={searchValue} setSearchValue={setSearchValue}/>
+        <Search/>
         <div className='header__cart'>
           <Link to={ROUTE_TO_CART} className='button button--cart'>
             <span>520 ₽</span>
