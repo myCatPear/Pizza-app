@@ -4,7 +4,7 @@ import style from './Pagination.module.scss'
 
 interface IPagination {
   onChangePage: (value:number) => void,
-  currentPage:number
+  currentPage:any
 }
 
 export const Pagination:FC<IPagination> = (props) => {

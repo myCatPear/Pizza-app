@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 interface ICategories {
-  categoryID: number,
+  categoryID: number | string,
   onSetCategoriesClick: (ID: number) => void
 }
 

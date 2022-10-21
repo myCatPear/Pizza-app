@@ -4,24 +4,48 @@ import { PizzaType } from 'common/types';
 import { SearchContext } from 'App';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootStateType } from 'store';
-import { setCategoryID, setCurrentPage } from 'store/slices/filterSlice';
+import { setCategoryID, setCurrentPage, setFilters } from 'store/slices/filterSlice';
 import { SortType } from 'common/types/sortType';
 import axios from 'axios';
 import { useDebounce } from 'common/hooks';
+import qs from 'qs';
+import { useNavigate } from 'react-router-dom';
+import { sortValues } from 'components/Sort/Sort';
 
 export const Home: FC = () => {
+  const navigate = useNavigate()
  const {searchValue} = useContext(SearchContext)
   const [items, setItems] = useState<PizzaType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const categoryID = useSelector<RootStateType, number >(state => state.filter.categoryID)
+  const categoryID = useSelector<RootStateType, number | string>(state => state.filter.categoryID)
   const sortType = useSelector<RootStateType, SortType>(state => state.filter.sort)
-  const currentPage = useSelector<RootStateType, number>(state => state.filter.currentPage)
+  const currentPage = useSelector<RootStateType, number | string>(state => state.filter.currentPage)
   const dispatch = useDispatch()
 
   const debounceSearch = useDebounce(searchValue,500)
   // const [currentPage, setCurrentPage] = useState(1);
   let baseUrl = `https://63447feb242c1f347f8782db.mockapi.io/Items?page=${currentPage}&limit=4&sortBy=${sortType.sortProperty}&order=${sortType.order}`;
   if (categoryID) baseUrl += `&category=${categoryID}`;
+
+  useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search, {ignoreQueryPrefix:true})
+      const sort = sortValues.find((obj) => obj.sortProperty === params.sortProperty)
+      console.log(params)
+      console.log(sort)
+
+
+
+      dispatch(setFilters({
+        // @ts-ignore
+        currentPage:params.currentPage,
+        // @ts-ignore
+        categoryID:params.categoryID,
+        // @ts-ignore
+        sort
+      }))
+    }
+  },[])
 
   useEffect(() => {
     // setIsLoading(true);
@@ -41,9 +65,17 @@ export const Home: FC = () => {
          setItems(res.data);
          setIsLoading(false)
        })
-
     window.scrollTo(0, 0);
   }, [categoryID, baseUrl, currentPage,debounceSearch]);
+
+  useEffect(() => {
+    const queryString = qs.stringify({
+      sortProperty:sortType.sortProperty,
+      categoryID,
+      currentPage
+    })
+    navigate(`?${queryString}`)
+  },[categoryID, currentPage,sortType])
 
   const skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
 

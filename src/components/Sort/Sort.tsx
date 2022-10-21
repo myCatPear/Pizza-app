@@ -5,7 +5,7 @@ import { RootStateType } from 'store';
 import { SortType } from 'common/types/sortType';
 import { setSort } from 'store/slices/filterSlice';
 
-const sortValues: SortType[] = [
+export const sortValues: SortType[] = [
   { sortProperty: 'rating', name: 'популярности(DESC)', order: 'desc' },
   { sortProperty: 'rating', name: 'популярности(ASC)', order: 'asc' },
   { sortProperty: 'price', name: 'цене(DESC)', order: 'desc' },
