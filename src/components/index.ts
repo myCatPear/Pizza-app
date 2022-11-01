@@ -6,3 +6,5 @@ export { NotFoundBlock } from './NotFoundBlock';
 export { Search } from './Search';
 export { PizzaSkeleton } from './Skeleton';
 export { Pagination } from './Pagination';
+export { CartItem } from './CartItem';
+export { CartEmpty } from './CartEmpty';

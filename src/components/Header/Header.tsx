@@ -3,12 +3,18 @@ import logoSVG from 'assets/img/pizza-logo.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTE_TO_CART, ROUTE_TO_HOME } from 'common/constants';
 import { Search } from 'components/Search';
+import { useSelector } from 'react-redux';
+import { RootStateType } from '../../store';
+import { CartInitialStateType } from '../../store/slices/cartSlice';
 
 
-export const Header:FC = () => {
-
+export const Header: FC = () => {
   const navigate = useNavigate();
+  const { totalPrice, items } = useSelector<RootStateType,CartInitialStateType>(state => state.cart);
   const onLogoClick = () => navigate(ROUTE_TO_HOME);
+
+  // @ts-ignore
+  const totalCount = items.reduce((sum,item) => sum + item.count,0)
   return (
     <div className='header'>
       <div className='container'>
@@ -19,10 +25,10 @@ export const Header:FC = () => {
             <p>самая вкусная пицца во вселенной</p>
           </div>
         </div>
-        <Search/>
+        <Search />
         <div className='header__cart'>
           <Link to={ROUTE_TO_CART} className='button button--cart'>
-            <span>520 ₽</span>
+            <span>{totalPrice}</span>
             <div className='button__delimiter'></div>
             <svg
               width='18'
@@ -53,7 +59,7 @@ export const Header:FC = () => {
                 strokeLinejoin='round'
               />
             </svg>
-            <span>3</span>
+            <span>{totalCount}</span>
           </Link>
         </div>
       </div>

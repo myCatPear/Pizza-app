@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, LegacyRef, useEffect, useRef, useState } from 'react';
 import { EMPTY_STRING } from 'common/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootStateType } from 'store';
@@ -18,8 +18,20 @@ export const sortValues: SortType[] = [
 export const Sort: FC = () => {
   const sortType = useSelector<RootStateType, SortType>(state => state.filter.sort);
   const dispatch = useDispatch();
+  const sortRef = useRef<HTMLDivElement | null>(null);
 
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // @ts-ignore
+      if (!event.composedPath().includes(sortRef.current)) setIsVisiblePopup(false);
+    };
+    document.body.addEventListener('click', handleClickOutside);
+    return () => {
+      document.body.removeEventListener('click', handleClickOutside)
+    }
+  }, []);
 
   const onSetIsVisiblePopupSpanClick = () => setIsVisiblePopup(!isVisiblePopup);
 
@@ -29,7 +41,7 @@ export const Sort: FC = () => {
   };
 
   return (
-    <div className='sort'>
+    <div ref={sortRef} className='sort'>
       <div className='sort__label'>
         <svg
           width='10'

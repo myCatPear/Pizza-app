@@ -1,24 +1,46 @@
 import React, { FC, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, CartInitialStateType, ItemType } from 'store/slices/cartSlice';
+import { RootStateType } from '../../store';
 
-interface IPizzaBlock {
-  title:string,
-  price:number,
-  imageUrl:string,
-  sizes:number[],
-  types:number[]
+export interface IPizzaBlock {
+  title: string,
+  price: number,
+  imageUrl: string,
+  sizes: number[],
+  types: number[],
+  id: number
 }
 
-export const PizzaBlock:FC<IPizzaBlock> = (props) => {
-  const {title,price, imageUrl, sizes, types} = props
-  const typesOFPizzaSize = ['тонкое', 'традиционное']
-  const DEFAULT_ACTIVE_INDEX_OF_PIZZA_SIZE = 0
-  const DEFAULT_ACTIVE_INDEX_OF_PIZZA_TYPE = 0
-  const [activeIndexOfPizzaSize, setActiveIndexOfPizzaSize] = useState(DEFAULT_ACTIVE_INDEX_OF_PIZZA_SIZE)
-  const [activeIndexOfPizzaType, setActiveIndexOfPizzaType] = useState(DEFAULT_ACTIVE_INDEX_OF_PIZZA_TYPE)
-  const onSetActiveSizeClick = (index:number) => setActiveIndexOfPizzaSize(index)
-  const onSetActiveTypeClick = (index:number) => setActiveIndexOfPizzaType(index)
+const typesOFPizzaSize = ['тонкое', 'традиционное'];
+
+export const PizzaBlock: FC<IPizzaBlock> = (props) => {
+  const { title, price, imageUrl, sizes, types, id } = props;
+  const DEFAULT_ACTIVE_INDEX_OF_PIZZA_SIZE = 0;
+  const DEFAULT_ACTIVE_INDEX_OF_PIZZA_TYPE = 0;
+  const [activeIndexOfPizzaSize, setActiveIndexOfPizzaSize] = useState(DEFAULT_ACTIVE_INDEX_OF_PIZZA_SIZE);
+  const [activeIndexOfPizzaType, setActiveIndexOfPizzaType] = useState(DEFAULT_ACTIVE_INDEX_OF_PIZZA_TYPE);
+  const onSetActiveSizeClick = (index: number) => setActiveIndexOfPizzaSize(index);
+  const onSetActiveTypeClick = (index: number) => setActiveIndexOfPizzaType(index);
+  const dispatch = useDispatch();
+  const cartItem = useSelector<RootStateType, ItemType | undefined>(state => state.cart.items.find(obj => obj.id === id));
+
+  const addedCount = cartItem ? cartItem.count : 0;
+
+  const onClickAdd = () => {
+    const item = {
+      id,
+      title,
+      price,
+      imageUrl,
+      type: typesOFPizzaSize[activeIndexOfPizzaType],
+      size: sizes[activeIndexOfPizzaSize]
+    };
+    dispatch(addItem(item));
+  };
+
   return (
-    <div className="pizza-block-wrapper">
+    <div className='pizza-block-wrapper'>
       <div className='pizza-block'>
         <img
           className='pizza-block__image'
@@ -29,34 +51,34 @@ export const PizzaBlock:FC<IPizzaBlock> = (props) => {
         <div className='pizza-block__selector'>
           <ul>
             {
-              types.map((typeID,index)=> {
+              types.map((typeID, index) => {
                 return <li
                   key={typeID}
-                  className={activeIndexOfPizzaType === index ? "active" : ""}
+                  className={activeIndexOfPizzaType === index ? 'active' : ''}
                   onClick={() => onSetActiveTypeClick(index)}
                 >
                   {typesOFPizzaSize[typeID]}
-                </li>
+                </li>;
               })
             }
           </ul>
           <ul>
             {
-              sizes.map((size,index) => {
+              sizes.map((size, index) => {
                 return <li
                   key={index}
-                  className={activeIndexOfPizzaSize === index ? "active" : ""}
-                  onClick={()=>onSetActiveSizeClick(index)}
+                  className={activeIndexOfPizzaSize === index ? 'active' : ''}
+                  onClick={() => onSetActiveSizeClick(index)}
                 >
                   {`${size} см.`}
-                </li>
+                </li>;
               })
             }
           </ul>
         </div>
         <div className='pizza-block__bottom'>
           <div className='pizza-block__price'>от {price} ₽</div>
-          <div className='button button--outline button--add'>
+          <div className='button button--outline button--add' onClick={onClickAdd}>
             <svg
               width='12'
               height='12'
@@ -69,8 +91,9 @@ export const PizzaBlock:FC<IPizzaBlock> = (props) => {
                 fill='white'
               />
             </svg>
-            <span>Добавить</span>
-            <i>2</i>
+            <span >Добавить</span>
+             {/*@ts-ignore*/}
+            {addedCount > 0 && <i>{addedCount}</i>}
           </div>
         </div>
       </div>
