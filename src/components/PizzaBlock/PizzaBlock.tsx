@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem, CartInitialStateType, ItemType } from 'store/slices/cartSlice';
-import { RootStateType } from '../../store';
+import { addItem, ItemType } from 'store/slices/cartSlice';
+import { RootStateType } from 'store';
 
 export interface IPizzaBlock {
   title: string,

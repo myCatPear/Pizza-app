@@ -1,22 +1,20 @@
-import React, { FC, useContext, useEffect, useRef, useState } from 'react';
-import { Categories, PizzaBlock, Sort, PizzaSkeleton, Pagination } from 'components';
+import React, { FC, useContext, useEffect, useRef } from 'react';
+import { Categories, Pagination, PizzaBlock, PizzaSkeleton, Sort } from 'components';
 import { PizzaType } from 'common/types';
 import { SearchContext } from 'App';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootStateType, useAppDispatch } from 'store';
 import { setCategoryID, setCurrentPage, setFilters } from 'store/slices/filterSlice';
 import { SortType } from 'common/types/sortType';
-import axios from 'axios';
 import { useDebounce } from 'common/hooks';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import { sortValues } from 'components/Sort/Sort';
-import { fetchPizzas, setItems, StatusType } from '../../store/slices/pizzasSlice';
+import { fetchPizzas, StatusType } from '../../store/slices/pizzasSlice';
 
 export const Home: FC = () => {
   const navigate = useNavigate();
   const { searchValue } = useContext(SearchContext);
-  const [isLoading, setIsLoading] = useState(true);
   const categoryID = useSelector<RootStateType, number | string>(state => state.filter.categoryID);
   const sortType = useSelector<RootStateType, SortType>(state => state.filter.sort);
   const currentPage = useSelector<RootStateType, number | string>(state => state.filter.currentPage);
@@ -36,7 +34,6 @@ export const Home: FC = () => {
     if (debounceSearch) baseUrl += `&search=${debounceSearch}`;
     try {
       dispatch(fetchPizzas({baseUrl}));
-      setIsLoading(false);
       isSearch.current = true;
     } catch (error) {
 
@@ -80,7 +77,7 @@ export const Home: FC = () => {
 
   const skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
 
-  const pizzas = items.map((pizza, index) => <PizzaBlock key={pizza.id} {...pizza} />);
+  const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
 
   const handleSetCategoryID = (id: number) => {
     dispatch(setCategoryID({ id }));
