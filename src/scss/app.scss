@@ -14,7 +14,7 @@ body {
   margin: 50px auto;
   border-radius: 10px;
   max-width: 1400px;
-  @media screen and (max-width: 645px){
+  @media screen and (max-width: 645px) {
     width: calc(100vw - 30px);
     margin-top: 15px;
   }
@@ -22,6 +22,21 @@ body {
 
 .content {
   padding: 40px 0;
+
+  &__error-info {
+    margin: 100px auto;
+    width: 580px;
+    text-align: center;
+
+    h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 20px;
+    }
+  }
 
   &__title {
     font-weight: 800;
@@ -55,12 +70,14 @@ body {
       .categories {
         width: 100%;
         overflow: auto;
+
         ul {
-            width: 785px;
+          width: 785px;
         }
       }
       .sort {
         padding-left: 20px;
+
         b {
           display: none;
         }

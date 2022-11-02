@@ -3,7 +3,7 @@ import { Categories, PizzaBlock, Sort, PizzaSkeleton, Pagination } from 'compone
 import { PizzaType } from 'common/types';
 import { SearchContext } from 'App';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootStateType } from 'store';
+import { RootStateType, useAppDispatch } from 'store';
 import { setCategoryID, setCurrentPage, setFilters } from 'store/slices/filterSlice';
 import { SortType } from 'common/types/sortType';
 import axios from 'axios';
@@ -11,43 +11,37 @@ import { useDebounce } from 'common/hooks';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import { sortValues } from 'components/Sort/Sort';
+import { fetchPizzas, setItems, StatusType } from '../../store/slices/pizzasSlice';
 
 export const Home: FC = () => {
   const navigate = useNavigate();
   const { searchValue } = useContext(SearchContext);
-  const [items, setItems] = useState<PizzaType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const categoryID = useSelector<RootStateType, number | string>(state => state.filter.categoryID);
   const sortType = useSelector<RootStateType, SortType>(state => state.filter.sort);
   const currentPage = useSelector<RootStateType, number | string>(state => state.filter.currentPage);
-  const dispatch = useDispatch();
+  const items = useSelector<RootStateType, PizzaType[]>(state => state.pizzas.items);
+  const status = useSelector<RootStateType, StatusType>(state => state.pizzas.status);
+  const dispatch = useAppDispatch();
   const isSearch = useRef(false);
   const isMounted = useRef(false);
 
   const debounceSearch = useDebounce(searchValue, 500);
   // const [currentPage, setCurrentPage] = useState(1);
   let baseUrl = `https://63447feb242c1f347f8782db.mockapi.io/Items?page=${currentPage}&limit=4&sortBy=${sortType.sortProperty}&order=${sortType.order}`;
-  if (categoryID) baseUrl += `&category=${categoryID}`;
 
-  const fetchPizzas = () => {
-    //setIsLoading(true);
-    // fetch(baseUrl).then((res) => {
-    //   return res.json();
-    // }).then((json) => {
-    //   setItems(json);
-    //   setIsLoading(false);
-    // });
-    // pizzaAPI.getPizzas(currentPage,4,sortType.sortProperty,sortType.order, ).then((res) => {
-    //   setItems(res.data)
-    //   setIsLoading(false);
-    // })
+
+  const getPizzas = async () => {
+    if (categoryID) baseUrl += `&category=${categoryID}`;
     if (debounceSearch) baseUrl += `&search=${debounceSearch}`;
-    axios.get(baseUrl)
-      .then((res) => {
-        setItems(res.data);
-        setIsLoading(false);
-      });
-    isSearch.current = true;
+    try {
+      dispatch(fetchPizzas({baseUrl}));
+      setIsLoading(false);
+      isSearch.current = true;
+    } catch (error) {
+
+    }
+
   };
 
   useEffect(() => {
@@ -66,9 +60,8 @@ export const Home: FC = () => {
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     if (!isSearch.current) {
-      fetchPizzas();
+      getPizzas();
     }
     isSearch.current = false;
   }, [categoryID, baseUrl, currentPage, debounceSearch]);
@@ -106,11 +99,20 @@ export const Home: FC = () => {
           <Sort />
         </div>
         <h2 className='content__title'>Все пиццы</h2>
-        <div className='content__items'>
-          {
-            isLoading ? skeletons : pizzas
-          }
-        </div>
+        {status === 'error' ? (
+          <div className="content__error-info">
+            <h2>Произошла ошибка =(</h2>
+            <p>Не удалось подключиться к серверу, попробуйте позже</p>
+          </div>
+        ) : (
+          <div className='content__items'>
+            {
+              status === 'loading' ? skeletons : pizzas
+            }
+          </div>
+        )
+        }
+
         <Pagination currentPage={currentPage} onChangePage={onChangePage} />
       </div>
     </>
