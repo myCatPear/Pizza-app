@@ -3,3 +3,4 @@ export const EMPTY_STRING = '';
 export const ROUTE_TO_HOME = '/home';
 export const ROUTE_TO_CART = '/cart';
 export const ROUTE_TO_PAGE_NOT_FOUND = '/404';
+export const ROUTE_TO_FULL_PIZZA = '/pizza/:id'

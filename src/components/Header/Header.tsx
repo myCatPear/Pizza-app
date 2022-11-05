@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import logoSVG from 'assets/img/pizza-logo.svg';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ROUTE_TO_CART, ROUTE_TO_HOME } from 'common/constants';
 import { Search } from 'components/Search';
 import { useSelector } from 'react-redux';
@@ -10,11 +10,17 @@ import { CartInitialStateType } from '../../store/slices/cartSlice';
 
 export const Header: FC = () => {
   const navigate = useNavigate();
-  const { totalPrice, items } = useSelector<RootStateType,CartInitialStateType>(state => state.cart);
+  const location = useLocation();
+  const {
+    totalPrice,
+    items
+  } = useSelector<RootStateType, CartInitialStateType>(state => state.cart);
+
+
   const onLogoClick = () => navigate(ROUTE_TO_HOME);
 
   // @ts-ignore
-  const totalCount = items.reduce((sum,item) => sum + item.count,0)
+  const totalCount = items.reduce((sum, item) => sum + item.count, 0);
   return (
     <div className='header'>
       <div className='container'>
@@ -27,7 +33,7 @@ export const Header: FC = () => {
         </div>
         <Search />
         <div className='header__cart'>
-          <Link to={ROUTE_TO_CART} className='button button--cart'>
+          {location.pathname !== '/cart' && <Link to={ROUTE_TO_CART} className='button button--cart'>
             <span>{totalPrice}</span>
             <div className='button__delimiter'></div>
             <svg
@@ -61,6 +67,7 @@ export const Header: FC = () => {
             </svg>
             <span>{totalCount}</span>
           </Link>
+          }
         </div>
       </div>
     </div>

@@ -1,21 +1,21 @@
 import React, { FC, useContext, useEffect, useRef } from 'react';
 import { Categories, Pagination, PizzaBlock, PizzaSkeleton, Sort } from 'components';
 import { PizzaType } from 'common/types';
-import { SearchContext } from 'App';
 import { useSelector } from 'react-redux';
 import { RootStateType, useAppDispatch } from 'store';
 import { setCategoryID, setCurrentPage, setFilters } from 'store/slices/filterSlice';
 import { SortType } from 'common/types/sortType';
 import { useDebounce } from 'common/hooks';
 import qs from 'qs';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { sortValues } from 'components/Sort/Sort';
 import { fetchPizzas, StatusType } from '../../store/slices/pizzasSlice';
+import { selectFilterCategoryID } from '../../common/selectors';
 
 export const Home: FC = () => {
   const navigate = useNavigate();
-  const { searchValue } = useContext(SearchContext);
-  const categoryID = useSelector<RootStateType, number | string>(state => state.filter.categoryID);
+  const searchValue = useSelector<RootStateType, string>(state => state.filter.searchValue)
+  const categoryID = useSelector<RootStateType, number | string>(selectFilterCategoryID);
   const sortType = useSelector<RootStateType, SortType>(state => state.filter.sort);
   const currentPage = useSelector<RootStateType, number | string>(state => state.filter.currentPage);
   const items = useSelector<RootStateType, PizzaType[]>(state => state.pizzas.items);
@@ -25,7 +25,6 @@ export const Home: FC = () => {
   const isMounted = useRef(false);
 
   const debounceSearch = useDebounce(searchValue, 500);
-  // const [currentPage, setCurrentPage] = useState(1);
   let baseUrl = `https://63447feb242c1f347f8782db.mockapi.io/Items?page=${currentPage}&limit=4&sortBy=${sortType.sortProperty}&order=${sortType.order}`;
 
 
@@ -77,7 +76,7 @@ export const Home: FC = () => {
 
   const skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
 
-  const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
+  const pizzas = items.map((pizza) => <Link to={`/pizza/${pizza.id}`} key={pizza.id}><PizzaBlock {...pizza} /></Link>);
 
   const handleSetCategoryID = (id: number) => {
     dispatch(setCategoryID({ id }));

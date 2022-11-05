@@ -1,18 +1,22 @@
-import React, { ChangeEvent, FC, useContext, useRef } from 'react';
+import React, { ChangeEvent, FC, useRef } from 'react';
 import style from './Search.module.scss';
 import { EMPTY_STRING } from 'common/constants';
-import { SearchContext } from 'App';
+import { RootStateType, useAppDispatch } from 'store';
+import { setSearchValue } from 'store/slices/filterSlice';
+import { useSelector } from 'react-redux';
+
 
 export const Search: FC = () => {
-  const { searchValue, setSearchValue } = useContext(SearchContext);
+  const dispatch = useAppDispatch();
+  const searchValue = useSelector<RootStateType, string>(state => state.filter.searchValue)
 
   const onSetSearchValueChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
-    setSearchValue(value);
+    dispatch(setSearchValue({value}));
   };
 
   const onResetSearchValueSvgClick = () => {
-    setSearchValue(EMPTY_STRING);
+    setSearchValue({value:EMPTY_STRING});
     inputRef.current?.focus();
   };
 

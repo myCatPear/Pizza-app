@@ -5,14 +5,10 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { publicRoutes } from './routes';
 import { EMPTY_STRING, ROUTE_TO_HOME, ROUTE_TO_PAGE_NOT_FOUND } from './common/constants';
 
-export const SearchContext = createContext<any>(null);
-
 export const App = () => {
-  const [searchValue, setSearchValue] = useState(EMPTY_STRING);
 
   return (
     <div className='wrapper'>
-      <SearchContext.Provider value={{ searchValue, setSearchValue }}>
         <Header />
         <div className='content'>
           <Routes>
@@ -24,7 +20,6 @@ export const App = () => {
             <Route path={'*'} element={<Navigate to={ROUTE_TO_PAGE_NOT_FOUND} />} />
           </Routes>
         </div>
-      </SearchContext.Provider>
     </div>
   );
 };
